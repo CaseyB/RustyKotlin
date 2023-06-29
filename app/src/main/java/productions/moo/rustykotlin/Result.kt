@@ -1,5 +1,7 @@
 package productions.moo.rustykotlin
 
+import kotlin.reflect.typeOf
+
 /**
  * This class represents a return value from a function that would fail. The only two valid types
  * are [Ok] and [Error]. The type can be checked using the [isOk] and [isError] properties
@@ -107,10 +109,25 @@ class Ok<T>(val value: T) : Result<T>() {
   override fun toString(): String {
     return "Ok: $value"
   }
+
+  override fun equals(other: Any?) = (other is Ok<*>)
+    && value == other.value
+
+  override fun hashCode(): Int {
+    return value.hashCode()
+  }
 }
 
 class Error<T>(val error: Throwable) : Result<T>() {
   override fun toString(): String {
     return "Error: ${error.message}"
+  }
+
+  override fun equals(other: Any?) = (other is Error<*>)
+    && error::class == other.error::class
+    && error.message == other.error.message
+
+  override fun hashCode(): Int {
+    return error.hashCode()
   }
 }
